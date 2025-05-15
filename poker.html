@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Poker Blind Timer</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .container {
+    background: #333;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 25px #000;
+    text-align: center;
+    width: 100%;
+  }
+  h1 {
+    margin: 0 0 15px;
+    font-weight: 700;
+  }
+  .blinds {
+    font-size: 36px;
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 1px 1px 5px #222;
+  }
+  .timer {
+    font-size: 72px;
+    font-weight: 900;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px #440000;
+  }
+  button {
+    background: #ffcc00;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 30px;
+    font-size: 22px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #222;
+    box-shadow: 0 0 10px #ffaa00;
+  }
+  button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    color: #ccc;
+    box-shadow: none;
+  }
+  .level-info {
+    margin-top: 18px;
+    font-size: 16px;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Blind Timer</h1>
+  <div class="level-info" id="timeInfo">Start time: 00:00</div>
+  <div class="level-info" id="levelInfo">Level: 1</div>
+  <div class="blinds" id="blindsInfo">SB 25 / BB 50</div>
+  <div class="timer" id="timer">00:05</div>
+  <button id="startBtn">Start Level</button>
+  <div class="level-info" id="notes"></div>
+</div>
+
+<!-- shorter softer beep -->
+<audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<script>
+  const levels = [
+    {level: 1, small: 25, big: 50, notes: "Super deep starting stacks", duration: 5},
+    {level: 2, small: 50, big: 100, notes: "Smooth early play"},
+    {level: 3, small: 75, big: 150, notes: "Slight pressure bump"},
+    {level: 4, small: 100, big: 200, notes: "Beginning to open up"},
+    {level: 5, small: 150, big: 300, notes: "Final rebuy level"},
+    {level: "Break", small: 0, big: 0, notes: "20-minute food break", duration: 45 * 60},
+    {level: 6, small: 200, big: 400, notes: "Rebuys closed"},
+    {level: 7, small: 300, big: 600, notes: "Pressure increasing"},
+    {level: 8, small: 400, big: 800, notes: "Deep-stacked play ends"},
+    {level: 9, small: 600, big: 1200, notes: "Bubble zone"},
+    {level: 10, small: 800, big: 1600, notes: "Final table heat"},
+    {level: 11, small: 1000, big: 2000, notes: "All-in or fold stage"},
+  ];
+
+  const levelDurationSeconds = 15 * 60; // 15 minutes
+  let currentLevelIndex = 0;
+  let timerInterval = null;
+  let timeLeft = levels[0].duration || levelDurationSeconds;
+
+  const timerEl = document.getElementById("timer");
+  const startBtn = document.getElementById("startBtn");
+  const blindsInfo = document.getElementById("blindsInfo");
+  const levelInfo = document.getElementById("levelInfo");
+  const notes = document.getElementById("notes");
+  const timeInfo = document.getElementById("timeInfo");
+  const alertSound = document.getElementById("alertSound");
+
+  function updateDisplay() {
+    let min = Math.floor(timeLeft / 60);
+    let sec = timeLeft % 60;
+    timerEl.textContent = `${min.toString().padStart(2,"0")}:${sec.toString().padStart(2,"0")}`;
+
+    let lvl = levels[currentLevelIndex];
+    if (lvl.level === "Break") {
+      levelInfo.textContent = `Break`;
+      blindsInfo.textContent = `--`;
+    } else {
+      levelInfo.textContent = `Level: ${lvl.level}`;
+      blindsInfo.textContent = `SB ${lvl.small} / BB ${lvl.big}`;
+    }
+    notes.textContent = lvl.notes;
+  }
+
+  function tick() {
+  if (timeLeft > 0) {
+    timeLeft--;
+    updateDisplay();
+  } else {
+    clearInterval(timerInterval);
+    alertSound.play(); // First alert
+    setTimeout(() => {
+      alertSound.play(); // Second alert after 1.5s
+    }, 1500);
+
+    startBtn.disabled = false;
+    startBtn.textContent = "Start Next Level";
+  }
+}
+
+  function startLevel() {
+    if (currentLevelIndex >= levels.length) {
+      alert("Tournament is over!");
+      return;
+    }
+    let lvl = levels[currentLevelIndex];
+    timeLeft = lvl.duration ? lvl.duration : levelDurationSeconds;
+    updateDisplay();
+    startBtn.disabled = true;
+    startBtn.textContent = "Level running...";
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  startBtn.addEventListener("click", () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    startLevel();
+    currentLevelIndex++;
+  });
+
+  // Initial display
+  updateDisplay();
+  startBtn.textContent = "Start Level 1";
+</script>
+
+</body>
+</html>
