@@ -117,32 +117,44 @@
 <div class="chip-legend">
   <h2 style="margin-bottom: 10px;">Chip Values</h2>
   <ul>
-    <li><span class="chip white"></span> White – 25</li>
-    <li><span class="chip red"></span> Red – 100</li>
-    <li><span class="chip blue"></span> Blue – 500</li>
-    <li><span class="chip green"></span> Green – 1000</li>
+    <li><span class="chip white"></span> White – $25</li>
+    <li><span class="chip red"></span> Red – $100</li>
+    <li><span class="chip blue"></span> Blue – $500</li>
+    <li><span class="chip green"></span> Green – $1000</li>
   </ul>
 </div>
+
+<div class="chip-legend">
+  <h2 style="margin-bottom: 10px;">Starting stack</h2>
+  <ul>
+    <li><span class="chip white"></span> White – 8 - ($200)</li>
+    <li><span class="chip red"></span> Red – 8 - ($800)</li>
+    <li><span class="chip blue"></span> Blue – 6 - ($3000)</li>
+    <li><span class="chip green"></span> Green – 4 - ($4000)</li>
+    <li><span class="chip"></span> Total = $8000</li>
+  </ul>
+</div>
+
 
 
 <!-- shorter softer beep -->
 <audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
 <script>
-const levels = [
-  {level: 1, small: 25, big: 50, notes: "Super deep starting stacks"},
-  {level: 2, small: 50, big: 100, notes: "Smooth early play"},
-  {level: 3, small: 75, big: 150, notes: "Slight pressure bump"},
-  {level: 4, small: 100, big: 200, notes: "Beginning to open up"},
-  {level: 5, small: 150, big: 300, notes: "Mid stage developing"},
-  {level: 6, small: 200, big: 400, notes: "More aggressive pots"},
-  {level: 7, small: 300, big: 600, notes: "Rebuys closing soon"},
-  {level: "Break", small: 0, big: 0, notes: "30-minute break", duration: 30 * 60},
-  {level: 8, small: 400, big: 800, notes: "Post-break momentum"},
-  {level: 9, small: 600, big: 1200, notes: "Bubble zone"},
-  {level: 10, small: 800, big: 1600, notes: "Final table heat"},
-  {level: 11, small: 1000, big: 2000, notes: "All-in or fold stage"},
-];
+  const levels = [
+    {level: 1, small: 25, big: 50, notes: "Super deep starting stacks"},
+    {level: 2, small: 50, big: 100, notes: "Smooth early play"},
+    {level: 3, small: 75, big: 150, notes: "Slight pressure bump"},
+    {level: 4, small: 100, big: 200, notes: "Beginning to open up"},
+    {level: 5, small: 150, big: 300, notes: "Final rebuy level"},
+    {level: "Break", small: 0, big: 0, notes: "30-minute break", duration: 30 * 60},
+    {level: 6, small: 200, big: 400, notes: "Rebuys closed"},
+    {level: 7, small: 300, big: 600, notes: "Pressure increasing"},
+    {level: 8, small: 400, big: 800, notes: "Deep-stacked play ends"},
+    {level: 9, small: 600, big: 1200, notes: "Bubble zone"},
+    {level: 10, small: 800, big: 1600, notes: "Final table heat"},
+    {level: 11, small: 1000, big: 2000, notes: "All-in or fold stage"},
+  ];
 
   const levelDurationSeconds = 15 * 60; // 15 minutes
   let currentLevelIndex = 0;
